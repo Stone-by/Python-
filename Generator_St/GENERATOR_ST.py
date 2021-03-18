@@ -1,12 +1,13 @@
-#ver 0.0.1
+#ver 0.0.2
 
-from fpdf import FPDF
-import datetime
-import os.path
 from tkinter import*
 from tkinter import filedialog
 from tkinter import messagebox
 from tkinter import Menu
+
+from docxtpl import DocxTemplate
+from docxcompose.composer import Composer
+from docx import Document as Document_compose
 
 Kod_YDK = ""
 Naz_Stat = ""
@@ -24,6 +25,32 @@ Kluhc_Sl_Ang = ""
 file1 = ""
 file2 = ""
 file2_Ang = ""
+
+def PEREMEN():
+    doc = DocxTemplate("title_page_template.docx")
+    context = {'UDK': Kod_YDK,
+               'PROJECTNAME_RU': Naz_Stat,
+               'NAME_RU': FIO,
+               'ADRESS_RU': Work,
+               'email': Email,
+               'annotation_RU': Anot,
+               'keywords_RU':  Kluhc_Sl,
+               'PROJECTNAME_EN': Naz_Stat_Ang,
+               'NAME_EN': FIO_Ang,
+               'ADRESS_EN': Work_Ang,
+               'annotation_EN': Anot_Ang,
+               'keywords_EN': Kluhc_Sl_Ang}
+    doc.render(context)
+    doc.save("title_page.docx")
+
+def combine_all_docx(filename_master,files_list):
+    number_of_sections=len(files_list)
+    master = Document_compose(filename_master)
+    composer = Composer(master)
+    for i in range(0, number_of_sections):
+        doc_temp = Document_compose(files_list[i])
+        composer.append(doc_temp)
+    composer.save("combined_file.docx")
 
 class MAIN:
     def Bloc1():
@@ -152,12 +179,12 @@ class MAIN:
     def Dop2():
         messagebox.showinfo('Доп 2','Тут пока ничего нет!')
     def Create():
-        pdf = FPDF(unit="mm", format="A4")
         #Само создание файла
-
+        PEREMEN()
+        filename_master = "title_page.docx"
+        files_list = [file1]
+        combine_all_docx(filename_master, files_list)
         #Само создание файла
-        filename = "Статья.pdf"
-        pdf.output(filename)
         messagebox.showinfo('Конец', 'Статья готова!')
     def clicked_meny_1():
         messagebox.showinfo('Помощь','Вас приветсвует генератор статей! Я помогаю собрать готовую статью в pdf файл, изменяю параметры страницы, шрифта, интервала и предупреждаю, если статья меньше необходимого! Вам нужно лишь заполнить все три Блока для создания и нажать "создать". Спасибо за внимание! Версия: 0.0.1')
