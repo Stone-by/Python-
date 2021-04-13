@@ -1,0 +1,18 @@
+import math
+
+def f13(n, m):
+    sum1 = 0
+    sum2 = 0
+    for i in range(1,n+1):
+        for j in range(1,m+1):
+            sum1 += (j/36 - math.fabs(i))
+    for i in range(1,n+1):
+        for j in range(1,m+1):
+            sum2 += (math.fabs(i) + (i**2) + 43)
+    return sum1 + sum2
+
+
+n = 34
+m = 48
+
+print('{:e}'.format(f13(n, m)))
